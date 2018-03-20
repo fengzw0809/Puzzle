@@ -1,0 +1,119 @@
+h1{
+	text-align: center;
+}
+#gameArea{
+	height: 360px;
+	width: 360px;
+	margin: auto;
+	border: 1px gray solid;
+	position: relative;
+}
+#restart{
+	margin: auto;
+	margin-top: 15px;
+	background-color: #4584f6;
+	color: white;
+	width: 100px;
+	height: 40px;
+	font-size: 15px;
+	box-shadow: 2px 2px 2px gray;
+	display: block;
+}
+.puzzle{
+	width: 88px;
+	height: 88px;
+	padding: 0px;
+	margin: 0.5px;
+	border: 0.5px solid gray;
+	display: inline-block;
+	cursor: pointer;
+	background-image: url("panda.jpg");
+	position: absolute;
+	transition: all 0.2s;
+}
+.top0{
+	top: 1px;
+
+}
+.top1{
+	top: 91px;
+
+}
+.top2{
+	top: 181px;
+
+}
+.top3{
+	top: 271px;
+
+}
+.left0{
+	left: 1px;
+
+}
+.left1{
+	left: 91px;
+
+}
+.left2{
+	left: 181px;
+}
+.left3{
+	left: 271px;
+
+}
+.bg0{
+	background-position: 0% 0%;
+}
+.bg1{
+	background-position: 33.3% 0%;
+}
+.bg2{
+	background-position: 66.7% 0%;
+}
+.bg3{
+	background-position: 100% 0%;
+}
+.bg4{
+	background-position: 0% 33.3%;
+}
+.bg5{
+	background-position: 33.3% 33.3%;
+}
+.bg6{
+	background-position: 66.7% 33.3%;
+}
+.bg7{
+	background-position: 100% 33.3%;
+}
+.bg8{
+	background-position: 0% 66.7%;
+}
+.bg9{
+	background-position: 33.3% 66.7%;
+}
+.bg10{
+	background-position: 66.7% 66.7%;
+}
+.bg11{
+	background-position: 100% 66.7%;
+}
+.bg12{
+	background-position: 0% 100%;
+}
+.bg13{
+	background-position: 33.3% 100%;
+}
+.bg14{
+	background-position: 66.7% 100%;
+}
+.blank{
+	width: 88px;
+	height: 88px;
+	margin: 0px;
+	display: inline-block;
+	margin: 0.5px;
+	position: absolute;
+	transition: all 0.2s;
+}
+
