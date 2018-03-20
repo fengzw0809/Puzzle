@@ -1,40 +1,86 @@
-function Pieces(piece, styleInfo, pos, posInfo) {
-	this.piece = piece;
+function Pieces(block, styleInfo, pos, seq) {
+	this.block = block;
 	this.styleInfo = styleInfo;
 	this.pos = pos;
-	this.posInfo = posInfo;
+	this.seq = seq;
+	this.posInfo = "top" + parseInt(pos / 4) + " left" + pos % 4;
 }
 Pieces.prototype.setStyle = function() {
-	this.piece.className = this.styleInfo + " " + this.posInfo;
+	this.updatePosInfo();
+	this.block.className = this.styleInfo + " " + this.posInfo;
+}
+Pieces.prototype.updatePosInfo = function() {
+	this.posInfo = "top" + parseInt(this.pos / 4) + " left" + this.pos % 4;
 }
 
 var pieces = new Array();
-function findPos(pos) {
+var gameOn = false;
+
+function isGameOver() {
+	for (var i = 0; i < 16; i++) {
+		if (pieces[i].pos != pieces[i].seq) return false;
+	}
+	return true;
+}
+function findBlockByPos(pos) {
 	if (pos > 15 || pos < 0) return false;
 	for (var i = 0; i < 16; i++) {
 		if (pieces[i].pos == pos) return pieces[i];
 	}
 }
-window.onload = function() {
-	var gameArea = document.getElementById("gameArea");
-	var restart = document.getElementById("restart");
+function initial() {
+	var gameArea = $("#gameArea");
+	$("p").hide();
+	for (var i = 0; i < 16; i++) {
+		if (i == 15) {
+			var block = $("<div></div>");
+			pieces.push(new Pieces(block, "blank", i, i));
+			pieces[pieces.length - 1].setStyle();
+			gameArea.append(block);
+			break;
+		}
+		else {
+			var block = document.createElement("div");
+			pieces.push(new Pieces(block, "puzzle bg" + i, i, i));
+			pieces[pieces.length - 1].setStyle();
+			gameArea.append(block);
+		}
+	}
+}
+
+$(document).ready(function() {
+	var gameArea = $("#gameArea");
 	initial();
 	for (var i = 0; i < 16; i++) {
-		pieces[i].piece.onclick = (function(k) {
-			return function() {
-				move(k);
+		pieces[i].block.onclick = (function(k) {
+ 			return function() {
+				playermove(k);
 			};
 		})(i);
 	}
-	restart.onclick = function() {
-		for (var i = 0; i < 10000; i++) {
+	$("#restart").click(function() {
+		var blocks = $("#gameArea > div");
+		$("p").hide();
+		for (var i = 0; i < 1000; i++) {
 			var random = parseInt(Math.random() * 16);
-			pieces[random].piece.click();
+			automove(random);
 		}
+		gameOn = true;
+	});
+	function automove(current) {
+		move(current);
 	}
-	function move(j) {
-		if (pieces[j].styleInfo == "blank") return;
-		var i = pieces[j].pos;
+	function playermove(current) {
+		if (gameOn == false) return;
+		else move(current);
+		if (isGameOver()) {
+			$('p').show();
+			gameOn = false;
+		} 
+	}
+	function move(current) {
+		if (pieces[current].styleInfo == "blank") return;
+		var i = pieces[current].pos;
 		if (i == 0) {
 			if (moveRight(i) || moveDown(i)) return;
 		}
@@ -64,13 +110,10 @@ window.onload = function() {
 		}
 	}
 	function moveUp(i) {
-		var piece1 = findPos(i);
-		var piece2 = findPos(i - 4);
+		var piece1 = findBlockByPos(i);
+		var piece2 = findBlockByPos(i - 4);
 		if (piece2.styleInfo == "blank") {
-			var temp = piece1.posInfo;
-			piece1.posInfo = piece2.posInfo;
-			piece2.posInfo = temp;
-			temp = piece1.pos;
+			var temp = piece1.pos;
 			piece1.pos = piece2.pos;
 			piece2.pos = temp;
 			piece1.setStyle();
@@ -79,13 +122,10 @@ window.onload = function() {
 		}
 	}
 	function moveDown(i) {
-		var piece1 = findPos(i);
-		var piece2 = findPos(i + 4);
+		var piece1 = findBlockByPos(i);
+		var piece2 = findBlockByPos(i + 4);
 		if (piece2.styleInfo == "blank") {
-			var temp = piece1.posInfo;
-			piece1.posInfo = piece2.posInfo;
-			piece2.posInfo = temp;
-			temp = piece1.pos;
+			var temp = piece1.pos;
 			piece1.pos = piece2.pos;
 			piece2.pos = temp;
 			piece1.setStyle();
@@ -94,13 +134,10 @@ window.onload = function() {
 		}
 	}
 	function moveLeft(i) {
-		var piece1 = findPos(i);
-		var piece2 = findPos(i - 1);
+		var piece1 = findBlockByPos(i);
+		var piece2 = findBlockByPos(i - 1);
 		if (piece2.styleInfo == "blank") {
-			var temp = piece1.posInfo;
-			piece1.posInfo = piece2.posInfo;
-			piece2.posInfo = temp;
-			temp = piece1.pos;
+			var temp = piece1.pos;
 			piece1.pos = piece2.pos;
 			piece2.pos = temp;
 			piece1.setStyle();
@@ -109,13 +146,10 @@ window.onload = function() {
 		}
 	}
 	function moveRight(i) {
-		var piece1 = findPos(i);
-		var piece2 = findPos(i + 1);
+		var piece1 = findBlockByPos(i);
+		var piece2 = findBlockByPos(i + 1);
 		if (piece2.styleInfo == "blank") {
-			var temp = piece1.posInfo;
-			piece1.posInfo = piece2.posInfo;
-			piece2.posInfo = temp;
-			temp = piece1.pos;
+			var temp = piece1.pos;
 			piece1.pos = piece2.pos;
 			piece2.pos = temp;
 			piece1.setStyle();
@@ -123,23 +157,6 @@ window.onload = function() {
 			return true;
 		}
 	}
-}
-function initial() {
-	var gameArea = document.getElementById("gameArea");
-	for (var i = 0; i < 16; i++) {
-		if (i == 15) {
-			var piece = document.createElement("div");
-			pieces.push(new Pieces(piece, "blank", i, "top" + parseInt(i / 4) + " left" + i % 4));
-			pieces[pieces.length - 1].setStyle();
-			gameArea.appendChild(piece);
-			break;
-		}
-		else {
-			var piece = document.createElement("div");
-			pieces.push(new Pieces(piece, "puzzle bg" + i, i, "top" + parseInt(i / 4) + " left" + i % 4));
-			pieces[pieces.length - 1].setStyle();
-			gameArea.appendChild(piece);
-		}
-	}
-}
+});
+
 
